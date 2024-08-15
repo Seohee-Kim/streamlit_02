@@ -271,77 +271,42 @@ def main():
             else:
                 st.warning("기준 컬럼과 수치 컬럼을 선택해주세요. 선택된 컬럼이 없을 경우 데이터를 표시할 수 없습니다.")
             
-        # 본문 3 - 차트
+        # 본문 3 - 비중 확인
         st.header(" ", anchor=False)
-        st.subheader("기준별 비중 확인")
+        st.subheader("비중 확인")
+        st.markdown('선택한 기준 컬럼에 대한 집행 비중을 확인할 수 있습니다.')
 
-        # col1, col2 = st.columns(2)
-        # col3, col4 = st.columns(2)
-        
-        # with col1:
-        #     st.write("미디어 집행비중")
-        #     draw_pieChart(temp_data, 'media_name', color_theme='Custom')
-        # with col2:
-        #     st.write("목적 집행비중")
-        #     draw_pieChart(temp_data, 'objective', color_theme='Custom')
-        # with col3:
-        #     st.write("기기 집행비중")
-        #     draw_pieChart(temp_data, 'device', color_theme='Custom')
-        # with col4:
-        #     st.write("업종 집행비중")
-        #     draw_pieChart(temp_data, 'inds_name', color_theme='Custom')
-        
-
-        # 기준 컬럼 (grouping_columns)
-        grouping_columns_options_for_ratio = ['media_name', 'adproduct_name', 'platform_position', 'device', 'bid_type', 'objective', 'buying_type', 'optimization_goal', 'billing_event', 'inds_name']
-        grouping_columns_default_for_ratio = ['media_name']
-
-        # form holding for ratio
-        with st.form(key='ratio_form'):
-            col1, col2 = st.columns([12, 1])  # 비율
-            
+        # 본문 3 - myform2
+        with st.form(key='myform2'):
+            _grouping_columns_options_default = ['media_name']
+            col1, col2 = st.columns([12, 1])
             with col1:
-                ratio_grouping_columns = st.multiselect("기준 컬럼을 선택하세요.", options=grouping_columns_options_for_ratio, default=grouping_columns_default_for_ratio)
-
+                grouping_columns = st.multiselect("기준 컬럼을 선택하세요.", options=_grouping_columns_options, default=_grouping_columns_options_default)
             with col2:
-                # 빈 영역 추가
                 st.markdown("<div style='height: 27px;'></div>", unsafe_allow_html=True)
                 submit_button_ratio = st.form_submit_button(label='적용')
 
-        # 데이터프레임 초기화 및 조건에 따른 처리
-        if ratio_grouping_columns:
-            grouped_df_ratio = temp_data.groupby(ratio_grouping_columns).size().reset_index(name='count')
-            grouped_df_ratio['percentage'] = grouped_df_ratio['count'] / grouped_df_ratio['count'].sum() * 100
-
-            # **변경**: percentage 기준으로 내림차순 정렬
-            grouped_df_ratio = grouped_df_ratio.sort_values(by='percentage', ascending=False)
-
-            styled_df_ratio = grouped_df_ratio.head(100).style.hide(axis='index').format({'percentage': '{:.2f}%'})
-            dataframe_ratio_placeholder = st.dataframe(styled_df_ratio, use_container_width=True)
+        # 본문 3 - 데이터프레임 (디폴트 데이터프레임으로 시작)
+        if grouping_columns:
+            grouped_df = temp_data.groupby(grouping_columns).size().reset_index(name='count')
+            grouped_df['percentage'] = grouped_df['count'] / grouped_df['count'].sum() * 100
+            grouped_df = grouped_df.sort_values(by='percentage', ascending=False).reset_index(drop=True) # 내림차순
+            styled_df = create_heatmap(grouped_df.head(100), ['count', 'percentage'])
+            dataframe_placeholder = st.dataframe(styled_df.hide(axis='index'), use_container_width=True) # 인덱스 숨기기
         else:
-            pass
+            pass # 패스, 다음 else문에서 워닝
 
-        # 사용자가 "적용" 버튼을 눌렀을 때만 데이터프레임을 업데이트
+        # 본문 3 - 데이터프레임 업데이트 (버튼 클릭으로 변경)
         if submit_button_ratio:
-            if ratio_grouping_columns:
-                grouped_df_ratio = temp_data.groupby(ratio_grouping_columns).size().reset_index(name='count')
-                grouped_df_ratio['percentage'] = grouped_df_ratio['count'] / grouped_df_ratio['count'].sum() * 100
-                
-                # **변경**: percentage 기준으로 내림차순 정렬
-                grouped_df_ratio = grouped_df_ratio.sort_values(by='percentage', ascending=False)
-                
-                styled_df_ratio = grouped_df_ratio.head(100).style.hide(axis='index').format({'percentage': '{:.2f}%'})
-                dataframe_ratio_placeholder.dataframe(styled_df_ratio, use_container_width=True)
+            if grouping_columns:
+                grouped_df = temp_data.groupby(grouping_columns).size().reset_index(name='count')
+                grouped_df['percentage'] = grouped_df['count'] / grouped_df['count'].sum() * 100
+                grouped_df = grouped_df.sort_values(by='percentage', ascending=False).reset_index(drop=True) # 내림차순
+                styled_df = create_heatmap(grouped_df.head(100), ['count', 'percentage'])
+                dataframe_placeholder.dataframe(styled_df.hide(axis='index'), use_container_width=True) # 인덱스 숨기기
             else:
-                # **변경**: ratio_grouping_columns가 비어 있을 때 경고 메시지 표시
                 st.warning("기준 컬럼을 선택해주세요. 선택된 컬럼이 없을 경우 데이터를 표시할 수 없습니다.")
 
-
-        
-        
-        
-        
-        
 
 
         # 본문 4 - 그래프 / Bokeh 대신 Plotly를 사용
