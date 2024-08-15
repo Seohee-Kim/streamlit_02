@@ -1,2 +1,1 @@
-# streamlit_02
-mac
+# streamlit_01

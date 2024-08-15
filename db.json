@@ -1,0 +1,19 @@
+{
+    "server2":
+        {
+        "host": "218.48.70.16", 
+        "user": "server2", 
+        "password": "epdlxjakzpxld!", 
+        "database": "dcdb_server2",
+        "port": 3308
+        },
+
+    "개발서버":
+        {
+        "host": "121.78.124.75", 
+        "user": "dmcmedia", 
+        "password": "DuFaj3fa#G4q", 
+        "database": "dmc_ad_data",
+        "port": 3308
+        }
+}
