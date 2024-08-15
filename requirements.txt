@@ -1,3 +1,4 @@
+Python==3.9.6
 altair==5.4.0
 attrs==24.2.0
 beautifulsoup4==4.12.3
