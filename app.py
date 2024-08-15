@@ -229,7 +229,7 @@ def main():
                 temp_data = temp_data[temp_data[col].isin(selected_values)]
 
         # 본문 0 - 제목
-        st.header("메타 대시보드", divider='gray')
+        st.header("메타 대시보드") # divider='gray'
         
         # 본문 1 - 메트릭 카드
         st.text(" ")
@@ -237,8 +237,8 @@ def main():
     
         # 본문 2 - 효울 확인
         st.header(" ", anchor=False)
-        st.subheader("효율 확인")
-        st.markdown('선택한 기준 컬럼에 대한 평균 효율 및 수치를 확인할 수 있습니다.')
+        st.subheader(":mag: 효율 확인하기")
+        st.markdown('''선택한 컬럼별 **평균 효율 및 수치**를 확인할 수 있습니다.''')
         
         # 본문 2 - my_form1
         with st.form(key='my_form1'):
@@ -273,8 +273,8 @@ def main():
             
         # 본문 3 - 비중 확인
         st.header(" ", anchor=False)
-        st.subheader("비중 확인")
-        st.markdown('선택한 기준 컬럼에 대한 집행 비중을 확인할 수 있습니다.')
+        st.subheader(":mag: 비중 확인하기")
+        st.markdown('선택한 컬럼별 **집행 비중**을 확인할 수 있습니다.')
 
         # 본문 3 - myform2
         with st.form(key='myform2'):
@@ -311,7 +311,7 @@ def main():
 
         # 본문 4 - 그래프 / Bokeh 대신 Plotly를 사용
         st.header(" ", anchor=False)
-        st.subheader("효율 추이")
+        st.subheader(":mag: 추이 확인하기")
         
         # form holding
         with st.form(key='my_form2'):
